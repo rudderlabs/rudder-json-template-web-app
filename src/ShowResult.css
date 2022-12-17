@@ -1,0 +1,9 @@
+.error {
+  color: red;
+}
+
+.no-result {
+  color: #17176e;
+  font-weight: bold;
+  margin-top: 20px;
+}

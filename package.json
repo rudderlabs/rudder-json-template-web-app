@@ -1,0 +1,45 @@
+{
+  "name": "rudder-json-template-engine-playground",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@monaco-editor/react": "^4.4.6",
+    "@types/node": "^16.18.3",
+    "@types/react": "^18.0.25",
+    "@types/react-dom": "^18.0.9",
+    "prettier": "^2.8.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
+    "rudder-json-template-engine": "^0.4.1",
+    "split-pane-react": "^0.1.3",
+    "typescript": "^4.9.3"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "rm -rf build && react-scripts build",
+    "eject": "react-scripts eject",
+    "format": "prettier --write '**/*.ts' '**/*.js' '**/*.tsx'  '**/*.css' '**/*.json'"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "monaco-editor-webpack-plugin": "^7.0.1"
+  }
+}

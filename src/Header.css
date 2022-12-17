@@ -1,0 +1,31 @@
+.header {
+  color: #17176e;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 0 30px;
+}
+
+.main-logo svg {
+  width: 250px;
+}
+
+.header .main-logo {
+  flex: 1 0 0;
+  text-align: left;
+}
+
+.header .title {
+  flex: 5 0 0;
+  text-align: center;
+}
+
+.header .icons {
+  flex: 1 0 0;
+  text-align: right;
+  margin: 10px 0 10px;
+}
+
+.header .icons a {
+  padding-left: 20px;
+}

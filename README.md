@@ -18,22 +18,25 @@
 
 ---
 
-# \*\*Repo Name\*\*
+# Rudder JSON Template Engine Playground
 
-\*\*Repo description\*\*
+[Playground](http://jte-beta.rudderstack.com.s3-website-us-east-1.amazonaws.com) is a Web app to play with JSON Template Language without installing it.
 
 ## Overview
 
-\*\*Describe what the software does.\*\*
+[JSON Template Language](https://github.com/rudderlabs/rudder-json-template-engine) makes it easy to work with JSON data.
 
 ## Features
-
-\*\*Describe the key features, if necessary.\*\*
+You can test with custom input and bindings on this playground.
+**Note:** Function bindings is not supported on in the playground.
 
 ## Getting started
-
-\*\*Describe how to use the software.\*\*
-
+```bash
+git clone https://github.com/rudderlabs/rudder-json-template-web-app.git
+cd rudder-json-template-web-app
+npm install
+npm start
+```
 ## Contribute
 
 We would love to see you contribute to RudderStack. Get more information on how to contribute [**here**](CONTRIBUTING.md).
