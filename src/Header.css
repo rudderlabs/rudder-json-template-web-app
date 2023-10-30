@@ -6,8 +6,9 @@
   margin: 0 30px;
 }
 
-.main-logo svg {
+.main-logo img {
   width: 250px;
+  margin-top: 20px;
 }
 
 .header .main-logo {
@@ -28,4 +29,24 @@
 
 .header .icons a {
   padding-left: 20px;
+}
+
+nav ul {
+  list-style-type: none;
+}
+
+nav li {
+  display: inline-block;
+  margin: 10px 0 10px;
+}
+
+nav a {
+  text-decoration: none;
+  color: #17176e;
+  padding: 5px;
+}
+
+nav a:hover, nav a.active {
+  background-color: #17176e;
+  color: #fff;
 }

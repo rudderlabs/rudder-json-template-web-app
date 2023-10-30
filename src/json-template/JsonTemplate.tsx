@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import Header from './Header';
+import Header from '../Header';
 import Playground from './Playground';
 
-const App = () => {
+export const JsonTemplate = () => {
   useEffect(() => {
     document.title = 'Json Template Engine';
   });
@@ -13,4 +13,3 @@ const App = () => {
     </div>
   );
 };
-export default App;

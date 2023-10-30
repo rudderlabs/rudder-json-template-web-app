@@ -1,36 +1,40 @@
 import React, { useState } from 'react';
-import { JsonTemplateEngine } from 'rudder-json-template-engine';
+import { TemplateType, WorkflowEngineFactory } from '@rudderstack/workflow-engine';
 import SplitPane from 'split-pane-react';
 import Editor from '@monaco-editor/react';
 import 'split-pane-react/esm/themes/default.css';
-import ShowResult from './ShowResult';
+import ShowResult from '../ShowResult';
 import './Playground.css';
-import { Result } from './types';
-import Loader from './Loader';
-import { CommonUtils } from './utils';
+import { Result } from '../types';
+import Loader from '../Loader';
+import { CommonUtils } from '../utils';
 
 const TIMEOUT = 15000;
 
-const DEFAULT_TEMPLATE = `/*
-* Note: Currently we are using javascript editor and JSON template
-* uses custom syntax. It won't be recognized by this editor so
-* you will see syntax errors. It won't effect the functionality 
-* of JSON template so please ignore these errors.
-*/
-`;
+const DEFAULT_WORKFLOW = `# Enter your workflow YAML code here`;
 
 const DEFAULT_DATA = `{
   "description": "Enter your data here"
 }`;
 
-const DEFAULT_BINDINGS = `{
+const DEFAULT_BINDINGS = `const bindings = {
   "description": "Enter your bindings here"
-}`;
+};`;
+
+async function createAndExecuteWorkflow(workflow: string, data: any, bindings: any): Promise<any> {
+  const workflowEngine = await WorkflowEngineFactory.createFromYaml(workflow, {
+    rootPath: '',
+    templateType: TemplateType.JSON_TEMPLATE,
+    creationTimeBindings: bindings,
+  });
+  const output = await workflowEngine.execute(data);
+  return output;
+}
 
 const PlayGround = () => {
-  const [data, setData] = useState<string | undefined>('{}');
-  const [bindings, setBindings] = useState<string | undefined>('{}');
-  const [template, setTemplate] = useState<string | undefined>('// Enter Json template');
+  const [data, setData] = useState<string | undefined>(DEFAULT_DATA);
+  const [bindings, setBindings] = useState<string | undefined>(DEFAULT_BINDINGS);
+  const [workflow, setWorkflow] = useState<string | undefined>(DEFAULT_WORKFLOW);
   const [result, setResult] = useState<Result | undefined>();
   const [isExecuting, setExecuting] = useState<boolean>(false);
 
@@ -48,16 +52,18 @@ const PlayGround = () => {
   };
   const sashRender = () => <div></div>;
 
-  const executeTemplate = async () => {
-    if (!template) {
+  const executeWorkflow = async () => {
+    if (!workflow) {
       return;
     }
     setExecuting(true);
     const dataObj = JSON.parse(data || '{}');
-    const bindingsObj = JSON.parse(bindings || '{}');
+    // eslint-disable-next-line no-new-func
+    const bindingsObj = new Function(`${bindings || DEFAULT_BINDINGS};return bindings;`)();
+
     try {
       const output = await CommonUtils.resolveWithTimeout(
-        JsonTemplateEngine.create(template).evaluate(dataObj, bindingsObj),
+        createAndExecuteWorkflow(workflow, dataObj, bindingsObj),
         TIMEOUT,
       );
       setResult({ output });
@@ -77,18 +83,18 @@ const PlayGround = () => {
             <Editor defaultLanguage="json" defaultValue={DEFAULT_DATA} onChange={setData} />
           </div>
           <div style={layoutCSS} title="Enter Bindings">
-            <Editor defaultLanguage="json" defaultValue={DEFAULT_BINDINGS} onChange={setBindings} />
+            <Editor
+              defaultLanguage="javascript"
+              defaultValue={DEFAULT_BINDINGS}
+              onChange={setBindings}
+            />
           </div>
         </SplitPane>
         <SplitPane split="horizontal" sizes={sizes2} onChange={setSizes2} sashRender={sashRender}>
-          <div style={layoutCSS} title="Enter JSON Template">
-            <Editor
-              defaultLanguage="javascript"
-              defaultValue={DEFAULT_TEMPLATE}
-              onChange={setTemplate}
-            />
-            <div className="execute" title="Execute JSON Template">
-              <button onClick={executeTemplate}>Execute</button>
+          <div style={layoutCSS} title="Enter Worflow YAML">
+            <Editor defaultLanguage="yaml" defaultValue={DEFAULT_WORKFLOW} onChange={setWorkflow} />
+            <div className="execute" title="Execute Workflow">
+              <button onClick={executeWorkflow}>Execute</button>
             </div>
           </div>
 

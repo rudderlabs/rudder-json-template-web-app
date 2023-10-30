@@ -1,7 +1,8 @@
 import React from 'react';
-import { ReactComponent as RudderStackLogo } from './assets/images/rudderstack-logo.svg';
-import { ReactComponent as GithubLogo } from './assets/images/github-mark.svg';
-import { ReactComponent as DocsIcon } from './assets/images/docs.svg';
+import { NavLink } from 'react-router-dom';
+import RudderStackLogo from './assets/images/rudderstack-logo.svg';
+import GithubLogo from './assets/images/github-mark.svg';
+import DocsIcon from './assets/images/docs.svg';
 
 import './Header.css';
 
@@ -10,27 +11,37 @@ const Header = () => {
     <div className="header">
       <a target="_blank" rel="noreferrer" href="https://www.rudderstack.com/">
         <span className="main-logo">
-          <RudderStackLogo className="logo" />
+          <img src={RudderStackLogo} className="logo" alt="Rudderstack" />
         </span>
       </a>
 
       <span className="title">
-        <h2> JSON Template Engine Playground</h2>
+        <h2> Integrations Playground</h2>
       </span>
+      <nav className="links">
+        <ul>
+          <li>
+            <NavLink to="/json-template">Json Templates</NavLink>
+          </li>
+          <li>
+            <NavLink to="/workflow-engine">Workflows</NavLink>
+          </li>
+        </ul>
+      </nav>
       <span className="icons">
         <a
           target="_blank"
           rel="noreferrer"
           href="https://github.com/rudderlabs/rudder-json-template-engine"
         >
-          <GithubLogo className="logo" title="Source code" />
+          <img src={GithubLogo} className="logo" alt="RuddersSource codeack" />
         </a>
         <a
           target="_blank"
           rel="noreferrer"
           href="https://github.com/rudderlabs/rudder-json-template-engine/blob/main/docs/syntax.md"
         >
-          <DocsIcon title="Docs" />
+          <img src={DocsIcon} alt="Docs" title="Docs" />
         </a>
       </span>
     </div>
