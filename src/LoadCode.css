@@ -1,0 +1,41 @@
+.load-code {
+  width: 100%;
+  height: 100vh;
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+}
+
+.load-code .modal {
+  width: 240px;
+  height: 100px;
+  position: relative;
+  display: inline;
+  justify-content: center;
+  border: 2px solid #105ed5;
+  background-color: #fff;
+  padding: 10px;
+}
+
+.load-code .modal .title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #105ed5;
+  align-items: left;
+}
+
+.load-code img.close {
+  align-items: right;
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 20px;
+  font-weight: bold;
+  color: #105ed5;
+  cursor: pointer;
+  width: 20px;
+  padding: 5px;
+}
+

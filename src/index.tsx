@@ -1,9 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createHashRouter, Navigate, RouterProvider } from 'react-router-dom';
-import { JsonTemplate } from './json-template/JsonTemplate';
-import { Workflow } from './workflow-engine/Workflow';
-
+import { JsonTemplate } from './JsonTemplate';
+import { Workflow } from './Workflow';
 import './index.css';
 
 const router = createHashRouter([

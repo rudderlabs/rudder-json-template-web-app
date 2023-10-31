@@ -1,4 +1,5 @@
 export class CommonUtils {
+  static readonly DEFAULT_TIMEOUT = 15000;
   static wait(timeInMilliseconds: number): Promise<void> {
     return new Promise((resolve) => {
       setTimeout(resolve, timeInMilliseconds);

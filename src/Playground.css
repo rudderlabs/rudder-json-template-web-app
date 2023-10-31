@@ -4,13 +4,13 @@
 }
 
 .execute button {
-  color: #17176e;
+  color: #105ed5;
   font-size: 16px;
   font-weight: bold;
   padding: 5px;
 }
 
 .execute button:hover {
-  background-color: #17176e;
+  background-color: #105ed5;
   color: #fff;
 }

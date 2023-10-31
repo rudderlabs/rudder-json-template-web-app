@@ -1,12 +1,21 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
+import { ActionType, ActionsContext } from './action';
 import RudderStackLogo from './assets/images/rudderstack-logo.svg';
 import GithubLogo from './assets/images/github-mark.svg';
 import DocsIcon from './assets/images/docs.svg';
+import SaveIcon from './assets/images/save.svg';
+import LoadIcon from './assets/images/load.svg';
 
 import './Header.css';
 
 const Header = () => {
+  const { setAction } = useContext(ActionsContext);
+
+  const triggerAction = (action: ActionType) => {
+    setAction(action);
+  };
+
   return (
     <div className="header">
       <a target="_blank" rel="noreferrer" href="https://www.rudderstack.com/">
@@ -29,6 +38,12 @@ const Header = () => {
         </ul>
       </nav>
       <span className="icons">
+        <a title="Load code" onClick={() => triggerAction(ActionType.Load)}>
+          <img src={LoadIcon} className="logo" alt="Load" />
+        </a>
+        <a title="Save code" onClick={() => triggerAction(ActionType.Save)}>
+          <img src={SaveIcon} className="logo" alt="Save" />
+        </a>
         <a
           target="_blank"
           rel="noreferrer"
