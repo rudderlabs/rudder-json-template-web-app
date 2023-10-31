@@ -12,26 +12,38 @@ import { downloadCode, CodeType, DEFAULT_DATA, DEFAULT_BINDINGS, Code } from './
 import { useLocation } from 'react-router-dom';
 
 const PlayGround = (props: {
-  execute: (code: string, data: any, bindings: Record<string, any>) => Promise<any>,
-  type: CodeType,
+  execute: (code: string, data: any, bindings: Record<string, any>) => Promise<any>;
+  type: CodeType;
 }) => {
   const location = useLocation();
   const codeObj = (location.state?.code || {}) as Code;
+
   const codeLang = props.type === CodeType.JsonTemplate ? 'javascript' : 'yaml';
   const commentCode = props.type === CodeType.JsonTemplate ? '// ' : '# ';
   const initialCode = `${commentCode} Enter your ${props.type} code here`;
 
   const { action, setAction } = useContext(ActionsContext);
-  const [data, setData] = useState<string | undefined>(codeObj.data || DEFAULT_DATA);
-  const [bindings, setBindings] = useState<string | undefined>(codeObj.bindings || DEFAULT_BINDINGS);
-  const [code, setCode] = useState<string | undefined>(codeObj.code || initialCode);
+  const [data, setData] = useState<string | undefined>(DEFAULT_DATA);
+  const [bindings, setBindings] = useState<string | undefined>(DEFAULT_BINDINGS);
+  const [code, setCode] = useState<string | undefined>(initialCode);
   const [result, setResult] = useState<Result | undefined>();
   const [isExecuting, setExecuting] = useState<boolean>(false);
 
+  useEffect(() => {
+    if (codeObj.code) {
+      setCode(codeObj.code);
+    }
+    if (codeObj.data) {
+      setData(codeObj.data);
+    }
+    if (codeObj.bindings) {
+      setBindings(codeObj.bindings);
+    }
+  }, [codeObj]);
+
   function saveCode() {
     downloadCode({ code, type: props.type, data, bindings });
-  };
-
+  }
 
   async function excuteCode() {
     if (!code) {
@@ -41,8 +53,9 @@ const PlayGround = (props: {
     const dataObj = JSON.parse(data || '{}');
     // eslint-disable-next-line no-new-func
     const bindingsObj = new Function(`${bindings || DEFAULT_BINDINGS};return bindings;`)();
+
     try {
-      const output = await props.execute(code, bindingsObj, dataObj);
+      const output = await props.execute(code, dataObj, bindingsObj);
       setResult({ output });
     } catch (error: any) {
       setResult({ error: error.message });
@@ -77,37 +90,25 @@ const PlayGround = (props: {
   return (
     <div style={{ ...layoutCSS, height: '85vh' }}>
       {isExecuting && <Loader />}
-      {action === ActionType.Load && <LoadCode/>}
+      {action === ActionType.Load && <LoadCode />}
       <SplitPane split="vertical" sizes={sizes} onChange={setSizes} sashRender={sashRender}>
         <SplitPane split="horizontal" sizes={sizes1} onChange={setSizes1} sashRender={sashRender}>
           <div style={layoutCSS} title="Enter Data">
-            <Editor defaultLanguage="json" defaultValue={data} onChange={setData} />
+            <Editor defaultLanguage="json" value={data} onChange={setData} />
           </div>
           <div style={layoutCSS} title="Enter Bindings">
-            <Editor
-              defaultLanguage="javascript"
-              defaultValue={bindings}
-              onChange={setBindings}
-            />
+            <Editor defaultLanguage="javascript" value={bindings} onChange={setBindings} />
           </div>
         </SplitPane>
         <SplitPane split="horizontal" sizes={sizes2} onChange={setSizes2} sashRender={sashRender}>
           <div style={layoutCSS} title={`Enter ${props.type} Code`}>
-            <Editor defaultLanguage={codeLang} defaultValue={code} onChange={setCode} />
+            <Editor defaultLanguage={codeLang} value={code} onChange={setCode} />
             <div className="execute" title={`Execute ${props.type}`}>
               <button onClick={excuteCode}>Execute</button>
             </div>
           </div>
 
-          <div
-            style={{
-              height: '100%',
-              border: '1px solid #ddd',
-              padding: '10px',
-              textAlign: 'center',
-            }}
-            title="Result"
-          >
+          <div className="result" title="Result">
             <ShowResult result={result} />
           </div>
         </SplitPane>

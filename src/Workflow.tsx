@@ -12,7 +12,11 @@ export const Workflow = () => {
   });
   const [action, setAction] = useState<ActionType>(ActionType.None);
 
-  async function createAndExecuteWorkflow(workflow: string, data: any, bindings: Record<string, any>): Promise<any> {
+  async function createAndExecuteWorkflow(
+    workflow: string,
+    data: any,
+    bindings: Record<string, any>,
+  ): Promise<any> {
     const workflowEngine = await WorkflowEngineFactory.createFromYaml(workflow, {
       rootPath: '',
       templateType: TemplateType.JSON_TEMPLATE,
@@ -35,8 +39,7 @@ export const Workflow = () => {
     } catch (error: any) {
       return { error: error.message };
     }
-  };
-
+  }
 
   return (
     <ActionsContext.Provider value={{ action, setAction }}>

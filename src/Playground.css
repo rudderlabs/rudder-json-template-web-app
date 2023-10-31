@@ -14,3 +14,10 @@
   background-color: #105ed5;
   color: #fff;
 }
+
+.result {
+  height: 100%;
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}

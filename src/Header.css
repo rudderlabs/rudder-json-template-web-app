@@ -55,7 +55,8 @@ nav a {
   padding: 5px;
 }
 
-nav a:hover, nav a.active {
+nav a:hover,
+nav a.active {
   background-color: #105ed5;
   color: #fff;
 }

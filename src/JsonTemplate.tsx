@@ -1,4 +1,4 @@
-import React, { useEffect, useState, } from 'react';
+import React, { useEffect, useState } from 'react';
 import Playground from './Playground';
 import Header from './Header';
 import { ActionType, ActionsContext } from './action';
@@ -20,8 +20,8 @@ export const JsonTemplate = () => {
       return JsonTemplateEngine.create(code).evaluate(data, bindings);
     } catch (error: any) {
       return { error: error.message };
-    } 
-  };
+    }
+  }
 
   return (
     <ActionsContext.Provider value={{ action, setAction }}>
@@ -32,5 +32,3 @@ export const JsonTemplate = () => {
     </ActionsContext.Provider>
   );
 };
-
-
