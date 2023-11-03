@@ -7,6 +7,7 @@ import './Playground.css';
 import { Result } from './types';
 import Loader from './Loader';
 import LoadCode from './LoadCode';
+import SaveCode from './SaveCode';
 import { ActionType, ActionsContext } from './action';
 import { downloadCode, CodeType, DEFAULT_DATA, DEFAULT_BINDINGS, Code } from './code';
 import { useLocation } from 'react-router-dom';
@@ -22,7 +23,7 @@ const PlayGround = (props: {
   const commentCode = props.type === CodeType.JsonTemplate ? '// ' : '# ';
   const initialCode = `${commentCode} Enter your ${props.type} code here`;
 
-  const { action, setAction } = useContext(ActionsContext);
+  const { action, setAction, codeName } = useContext(ActionsContext);
   const [data, setData] = useState<string | undefined>(DEFAULT_DATA);
   const [bindings, setBindings] = useState<string | undefined>(DEFAULT_BINDINGS);
   const [code, setCode] = useState<string | undefined>(initialCode);
@@ -41,8 +42,18 @@ const PlayGround = (props: {
     }
   }, [codeObj]);
 
+  useEffect(() => {
+    if (action === ActionType.None) {
+      return;
+    }
+    if (action === ActionType.Save) {
+      saveCode();
+      setAction(ActionType.None);
+    }
+  }, [action]);
+
   function saveCode() {
-    downloadCode({ code, type: props.type, data, bindings });
+    downloadCode({ code, name: codeName, type: props.type, data, bindings });
   }
 
   async function excuteCode() {
@@ -63,16 +74,6 @@ const PlayGround = (props: {
     setExecuting(false);
   }
 
-  useEffect(() => {
-    if (action === ActionType.None) {
-      return;
-    }
-    if (action === ActionType.Save) {
-      saveCode();
-      setAction(ActionType.None);
-    }
-  }, [action]);
-
   const [sizes, setSizes] = useState<(number | string)[]>(['100vh', 'auto']);
   const [sizes1, setSizes1] = useState<(number | string)[]>(['100vh', 'auto']);
   const [sizes2, setSizes2] = useState<(number | string)[]>(['100vh', 'auto']);
@@ -91,6 +92,8 @@ const PlayGround = (props: {
     <div style={{ ...layoutCSS, height: '85vh' }}>
       {isExecuting && <Loader />}
       {action === ActionType.Load && <LoadCode />}
+      {action === ActionType.Saving && <SaveCode />}
+
       <SplitPane split="vertical" sizes={sizes} onChange={setSizes} sashRender={sashRender}>
         <SplitPane split="horizontal" sizes={sizes1} onChange={setSizes1} sashRender={sashRender}>
           <div style={layoutCSS} title="Enter Data">

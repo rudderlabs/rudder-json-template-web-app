@@ -11,6 +11,7 @@ export const JsonTemplate = () => {
   });
 
   const [action, setAction] = useState<ActionType>(ActionType.None);
+  const [codeName, setCodeName] = useState<string>('');
 
   async function executeJsonTemplate(code: string, data: any, bindings: any) {
     if (!code) {
@@ -24,7 +25,7 @@ export const JsonTemplate = () => {
   }
 
   return (
-    <ActionsContext.Provider value={{ action, setAction }}>
+    <ActionsContext.Provider value={{ action, setAction, codeName, setCodeName }}>
       <div className="app">
         <Header />
         <Playground execute={executeJsonTemplate} type={CodeType.JsonTemplate} />

@@ -48,7 +48,7 @@ const LoadCode = () => {
     <div className="load-code" onClick={closeModel}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <img src={CloseIcon} alt="Close" className="close" onClick={closeModel} />
-        <h4 className="title">Load Code</h4>
+        <div className="title">Load Code</div>
         <input type="file" onChange={handleCodeLoad} />
       </div>
     </div>

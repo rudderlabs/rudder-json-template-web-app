@@ -11,6 +11,7 @@ export const Workflow = () => {
     document.title = 'Workflow Engine';
   });
   const [action, setAction] = useState<ActionType>(ActionType.None);
+  const [codeName, setCodeName] = useState<string>('');
 
   async function createAndExecuteWorkflow(
     workflow: string,
@@ -42,7 +43,7 @@ export const Workflow = () => {
   }
 
   return (
-    <ActionsContext.Provider value={{ action, setAction }}>
+    <ActionsContext.Provider value={{ action, setAction, setCodeName, codeName }}>
       <div className="app">
         <Header />
         <Playground execute={executeWorkflow} type={CodeType.Workflow} />

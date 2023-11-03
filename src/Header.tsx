@@ -41,7 +41,7 @@ const Header = () => {
         <a title="Load code" onClick={() => triggerAction(ActionType.Load)}>
           <img src={LoadIcon} className="logo" alt="Load" />
         </a>
-        <a title="Save code" onClick={() => triggerAction(ActionType.Save)}>
+        <a title="Save code" onClick={() => triggerAction(ActionType.Saving)}>
           <img src={SaveIcon} className="logo" alt="Save" />
         </a>
         <a
@@ -54,7 +54,7 @@ const Header = () => {
         <a
           target="_blank"
           rel="noreferrer"
-          href="https://github.com/rudderlabs/rudder-json-template-engine/blob/main/docs/syntax.md"
+          href="https://github.com/rudderlabs/rudder-json-template-engine/blob/main/readme.md"
         >
           <img src={DocsIcon} alt="Docs" title="Docs" />
         </a>

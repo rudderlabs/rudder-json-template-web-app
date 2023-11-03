@@ -6,6 +6,7 @@ export enum CodeType {
 }
 
 export type Code = {
+  name: string;
   data?: string;
   type: CodeType;
   bindings?: string;
@@ -19,7 +20,7 @@ export function downloadCode(code: Code) {
   const element = document.createElement('a');
   const file = new Blob([JSON.stringify(code)], { type: 'text/plain' });
   element.href = URL.createObjectURL(file);
-  element.download = `${code.type}-${Date.now()}.json`;
+  element.download = `${code.type}-${code.name}-${Date.now()}.json`;
   document.body.appendChild(element); // Required for this to work in FireFox
   element.click();
   // remove element
