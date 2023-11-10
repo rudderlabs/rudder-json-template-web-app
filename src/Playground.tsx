@@ -11,9 +11,11 @@ import SaveCode from './SaveCode';
 import { ActionType, ActionsContext } from './action';
 import { downloadCode, CodeType, DEFAULT_DATA, DEFAULT_BINDINGS, Code } from './code';
 import { useLocation } from 'react-router-dom';
+import { parse } from 'path';
 
 const PlayGround = (props: {
   execute: (code: string, data: any, bindings: Record<string, any>) => Promise<any>;
+  parse?: (code: string) => any;
   type: CodeType;
 }) => {
   const location = useLocation();
@@ -74,6 +76,17 @@ const PlayGround = (props: {
     setExecuting(false);
   }
 
+  async function parseCode() {
+    if (!code || props.type !== CodeType.JsonTemplate || !props.parse) {
+      return;
+    }
+    try {
+      setResult({ output: props.parse(code) });
+    } catch (error: any) {
+      setResult({ error: error.message });
+    }
+  }
+
   const [sizes, setSizes] = useState<(number | string)[]>(['100vh', 'auto']);
   const [sizes1, setSizes1] = useState<(number | string)[]>(['100vh', 'auto']);
   const [sizes2, setSizes2] = useState<(number | string)[]>(['100vh', 'auto']);
@@ -106,8 +119,15 @@ const PlayGround = (props: {
         <SplitPane split="horizontal" sizes={sizes2} onChange={setSizes2} sashRender={sashRender}>
           <div style={layoutCSS} title={`Enter ${props.type} Code`}>
             <Editor defaultLanguage={codeLang} value={code} onChange={setCode} />
-            <div className="execute" title={`Execute ${props.type}`}>
-              <button onClick={excuteCode}>Execute</button>
+            <div className="playground-button">
+              {props.type === CodeType.JsonTemplate && (
+                <button onClick={parseCode} title={`Parse ${props.type}`}>
+                  Parse
+                </button>
+              )}
+              <button onClick={excuteCode} title={`Execute ${props.type}`}>
+                Execute
+              </button>
             </div>
           </div>
 

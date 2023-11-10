@@ -1,16 +1,17 @@
-.execute {
+.playground-button {
   text-align: center;
   margin: 10px;
 }
 
-.execute button {
+.playground-button button {
   color: #105ed5;
   font-size: 16px;
   font-weight: bold;
   padding: 5px;
+  margin-right: 10px;
 }
 
-.execute button:hover {
+.playground-button button:hover {
   background-color: #105ed5;
   color: #fff;
 }

@@ -14,21 +14,18 @@ export const JsonTemplate = () => {
   const [codeName, setCodeName] = useState<string>('');
 
   async function executeJsonTemplate(code: string, data: any, bindings: any) {
-    if (!code) {
-      return;
-    }
-    try {
-      return JsonTemplateEngine.create(code).evaluate(data, bindings);
-    } catch (error: any) {
-      return { error: error.message };
-    }
+    return JsonTemplateEngine.create(code).evaluate(data, bindings);
+  }
+
+  function parseJsonTemplate(code: string) {    
+    return JsonTemplateEngine.parse(code);
   }
 
   return (
     <ActionsContext.Provider value={{ action, setAction, codeName, setCodeName }}>
       <div className="app">
         <Header />
-        <Playground execute={executeJsonTemplate} type={CodeType.JsonTemplate} />
+        <Playground execute={executeJsonTemplate} parse={parseJsonTemplate} type={CodeType.JsonTemplate} />
       </div>
     </ActionsContext.Provider>
   );

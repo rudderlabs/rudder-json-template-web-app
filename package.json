@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@monaco-editor/react": "^4.5.2",
-    "@rudderstack/json-template-engine": "^0.8.1",
+    "@rudderstack/json-template-engine": "^0.8.2",
     "@rudderstack/workflow-engine": "^0.6.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -15,6 +15,7 @@
     "dev": "vite",
     "build": "rm -rf dist && tsc && vite build",
     "preview": "vite preview",
+    "upload":  "cd dist; aws s3 sync . s3://jte-beta.rudderstack.com/ --profile management; cd -",
     "format": "prettier --write '**/*.ts' '**/*.js' '**/*.tsx'  '**/*.css' '**/*.json'"
   },
   "eslintConfig": {
