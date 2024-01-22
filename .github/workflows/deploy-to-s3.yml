@@ -8,9 +8,9 @@ on:
 permissions:
   id-token: write # allows the JWT to be requested from GitHub's OIDC provider
   contents: read # This is required for actions/checkout
-  
+
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -32,11 +32,6 @@ jobs:
     - name: Build React App with Vite
       run: yarn build
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
     - name: Assume IAM Role and Set AWS Credentials
       id: assume-role
       uses: aws-actions/configure-aws-credentials@v4.0.1
@@ -47,7 +42,8 @@ jobs:
 
     - name: Synchronize with S3 and Invalidate CloudFront
       run: |
-        aws s3 sync dist/ s3://transformers-workflow-engine --exclude '*.html'
+        cd dist
+        aws s3 sync . s3://transformers-workflow-engine --delete
         aws cloudfront create-invalidation --distribution-id E2PO7XUKI9DBAP --paths "/*"
       env:
         AWS_REGION: us-east-1
