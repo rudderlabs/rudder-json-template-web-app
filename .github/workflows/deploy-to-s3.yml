@@ -11,13 +11,13 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4.1.1
 
     - name: Setup Node.js with .nvmrc
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4.0.1
       with:
-        node-version: $(cat .nvmrc)
-        registry-url: 'https://registry.yarnpkg.com/'
+        node-version-file: '.nvmrc'
+        cache: 'npm'
 
     - name: Install Yarn
       run: npm install -g yarn
@@ -35,7 +35,7 @@ jobs:
     steps:
     - name: Assume IAM Role and Set AWS Credentials
       id: assume-role
-      uses: aws-actions/configure-aws-credentials@v1
+      uses: aws-actions/configure-aws-credentials@v4.0.1
       with:
         aws-region: ${{ env.AWS_REGION }}
         role-to-assume: ${{ secrets.AWS_IAM_ROLE_ARN }}
