@@ -37,16 +37,16 @@ jobs:
       id: assume-role
       uses: aws-actions/configure-aws-credentials@v4.0.1
       with:
-        aws-region: ${{ env.AWS_REGION }}
+        aws-region: us-east-1
         role-to-assume: ${{ secrets.AWS_IAM_ROLE_ARN }}
         role-duration-seconds: 900 # Adjust as needed
 
     - name: Synchronize with S3 and Invalidate CloudFront
       run: |
-        aws s3 sync build/ s3://${{ env.S3_BUCKET }}/ --exclude '*.html'
-        aws cloudfront create-invalidation --distribution-id ${{ env.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+        aws s3 sync dist/ s3://transformers-workflow-engine --exclude '*.html'
+        aws cloudfront create-invalidation --distribution-id E2PO7XUKI9DBAP --paths "/*"
       env:
-        AWS_REGION: ${{ env.AWS_REGION }}
+        AWS_REGION: us-east-1
         AWS_ACCESS_KEY_ID: ${{ steps.assume-role.outputs.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ steps.assume-role.outputs.AWS_SECRET_ACCESS_KEY }}
         AWS_SESSION_TOKEN: ${{ steps.assume-role.outputs.AWS_SESSION_TOKEN }}
