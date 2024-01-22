@@ -1,0 +1,52 @@
+name: Build and Deploy React App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup Node.js with .nvmrc
+      uses: actions/setup-node@v3
+      with:
+        node-version: $(cat .nvmrc)
+        registry-url: 'https://registry.yarnpkg.com/'
+
+    - name: Install Yarn
+      run: npm install -g yarn
+
+    - name: Install dependencies
+      run: yarn install
+
+    - name: Build React App with Vite
+      run: yarn build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Assume IAM Role and Set AWS Credentials
+      id: assume-role
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-region: ${{ env.AWS_REGION }}
+        role-to-assume: ${{ secrets.AWS_IAM_ROLE_ARN }}
+        role-duration-seconds: 900 # Adjust as needed
+
+    - name: Synchronize with S3 and Invalidate CloudFront
+      run: |
+        aws s3 sync build/ s3://${{ env.S3_BUCKET }}/ --exclude '*.html'
+        aws cloudfront create-invalidation --distribution-id ${{ env.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+      env:
+        AWS_REGION: ${{ env.AWS_REGION }}
+        AWS_ACCESS_KEY_ID: ${{ steps.assume-role.outputs.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ steps.assume-role.outputs.AWS_SECRET_ACCESS_KEY }}
+        AWS_SESSION_TOKEN: ${{ steps.assume-role.outputs.AWS_SESSION_TOKEN }}
