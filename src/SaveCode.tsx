@@ -41,7 +41,7 @@ const SaveCode = () => {
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <img src={CloseIcon} alt="Close" className="close" onClick={closeModel} />
         <div className="title">Save Code</div>
-        <input type="text" placeholder='Enter Code name' onChange={handleChange}/>
+        <input type="text" placeholder="Enter Code name" onChange={handleChange} />
         <button onClick={handleCodeSave}>Save</button>
       </div>
     </div>

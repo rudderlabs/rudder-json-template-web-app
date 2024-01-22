@@ -15,7 +15,7 @@
     "dev": "vite",
     "build": "rm -rf dist && tsc && vite build",
     "preview": "vite preview",
-    "upload":  "cd dist; aws s3 sync . s3://jte-beta.rudderstack.com/ --profile management; cd -",
+    "upload": "cd dist; aws s3 sync . s3://jte-beta.rudderstack.com/ --profile management; cd -",
     "format": "prettier --write '**/*.ts' '**/*.js' '**/*.tsx'  '**/*.css' '**/*.json'"
   },
   "eslintConfig": {

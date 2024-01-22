@@ -17,7 +17,7 @@ export const JsonTemplate = () => {
     return JsonTemplateEngine.create(code).evaluate(data, bindings);
   }
 
-  function parseJsonTemplate(code: string) {    
+  function parseJsonTemplate(code: string) {
     return JsonTemplateEngine.parse(code);
   }
 
@@ -25,7 +25,11 @@ export const JsonTemplate = () => {
     <ActionsContext.Provider value={{ action, setAction, codeName, setCodeName }}>
       <div className="app">
         <Header />
-        <Playground execute={executeJsonTemplate} parse={parseJsonTemplate} type={CodeType.JsonTemplate} />
+        <Playground
+          execute={executeJsonTemplate}
+          parse={parseJsonTemplate}
+          type={CodeType.JsonTemplate}
+        />
       </div>
     </ActionsContext.Provider>
   );
