@@ -5,7 +5,7 @@
   "dependencies": {
     "@monaco-editor/react": "^4.5.2",
     "@rudderstack/json-template-engine": "^0.8.4",
-    "@rudderstack/workflow-engine": "^0.7.0",
+    "@rudderstack/workflow-engine": "^0.6.10",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.17.0",
@@ -15,7 +15,6 @@
     "dev": "vite",
     "build": "rm -rf dist && tsc && vite build",
     "preview": "vite preview",
-    "upload": "cd dist; aws s3 sync . s3://jte-beta.rudderstack.com/ --profile management; cd -",
     "format": "prettier --write '**/*.ts' '**/*.js' '**/*.tsx'  '**/*.css' '**/*.json'"
   },
   "eslintConfig": {
@@ -44,6 +43,7 @@
     "prettier": "^3.0.3",
     "typescript": "^5.2.2",
     "vite": "^4.5.0",
+    "vite-plugin-dynamic-import": "^1.5.0",
     "vite-plugin-node-polyfills": "^0.15.0"
   }
 }
