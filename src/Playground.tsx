@@ -19,6 +19,8 @@ const PlayGround = (props: {
   type: CodeType;
 }) => {
   const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const githubGistID = queryParams.get('gist');
   const codeObj = (location.state?.code || {}) as Code;
 
   const codeLang = props.type === CodeType.JsonTemplate ? 'javascript' : 'yaml';
@@ -31,6 +33,35 @@ const PlayGround = (props: {
   const [code, setCode] = useState<string | undefined>(initialCode);
   const [result, setResult] = useState<Result | undefined>();
   const [isExecuting, setExecuting] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!githubGistID) return; // If gistId is not provided, return early
+
+    const fetchGist = async () => {
+      try {
+        const response = await fetch(`https://api.github.com/gists/${githubGistID}`);
+        if (response.ok) {
+          const data = await response.json();
+          // Extract raw content of the first file in the gist
+          const files: any[] = Object.values(data.files);
+          if (files.length > 0) {
+            const codeObj = JSON.parse(files[0].content) as Code;
+            setData(codeObj.data);
+            setBindings(codeObj.bindings);
+            setCode(codeObj.code);
+          } else {
+            throw new Error('No files found in the Gist');
+          }
+        } else {
+          throw new Error('Failed to fetch Gist');
+        }
+      } catch (error) {
+        console.error('Error fetching Gist:', error);
+      }
+    };
+
+    fetchGist();
+  }, [githubGistID]);
 
   useEffect(() => {
     if (codeObj.code) {
@@ -63,9 +94,9 @@ const PlayGround = (props: {
       return;
     }
     setExecuting(true);
-    const dataObj = JSON.parse(data || '{}');
+    const dataObj = JSON.parse(data ?? '{}');
     // eslint-disable-next-line no-new-func
-    const bindingsObj = new Function(`${bindings || DEFAULT_BINDINGS};return bindings;`)();
+    const bindingsObj = new Function(`${bindings ?? DEFAULT_BINDINGS};return bindings;`)();
 
     try {
       const output = await props.execute(code, dataObj, bindingsObj);
