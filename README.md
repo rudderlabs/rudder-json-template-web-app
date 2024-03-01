@@ -20,7 +20,7 @@
 
 # Rudder JSON Template Engine Playground
 
-[Playground](http://jte-beta.rudderstack.com.s3-website-us-east-1.amazonaws.com) is a Web app to play with JSON Template Language without installing it.
+[Playground](https://transformers-workflow-engine.rudderstack.com/) is a Web app to play with JSON Template Language without installing it.
 
 ## Overview
 
