@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Code, CodeType } from './code';
+import { Code, CodeType } from './types';
 import { ActionType, ActionsContext } from './action';
 import CloseIcon from './assets/images/close.svg';
 import './LoadCode.css';

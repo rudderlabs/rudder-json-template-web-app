@@ -4,7 +4,7 @@ import Playground from './Playground';
 import { ActionType, ActionsContext } from './action';
 import { TemplateType, WorkflowEngineFactory } from '@rudderstack/workflow-engine';
 import { CommonUtils } from './utils';
-import { CodeType } from './code';
+import { CodeType } from './types';
 
 export const Workflow = () => {
   useEffect(() => {

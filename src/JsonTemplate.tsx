@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Playground from './Playground';
 import Header from './Header';
 import { ActionType, ActionsContext } from './action';
-import { CodeType } from './code';
+import { CodeType } from './types';
 import { JsonTemplateEngine } from '@rudderstack/json-template-engine';
 
 export const JsonTemplate = () => {
