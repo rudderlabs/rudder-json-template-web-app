@@ -35,7 +35,7 @@ You can test with custom input and bindings on this playground.
 git clone https://github.com/rudderlabs/rudder-json-template-web-app.git
 cd rudder-json-template-web-app
 npm install
-npm start
+npm run dev
 ```
 ## Contribute
 
