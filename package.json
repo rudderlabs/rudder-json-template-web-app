@@ -4,8 +4,8 @@
   "private": true,
   "dependencies": {
     "@monaco-editor/react": "^4.6.0",
-    "@rudderstack/json-template-engine": "^0.10.2",
-    "@rudderstack/workflow-engine": "^0.7.6",
+    "@rudderstack/json-template-engine": "^0.10.5",
+    "@rudderstack/workflow-engine": "^0.7.9",
     "axios": "^1.7.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
