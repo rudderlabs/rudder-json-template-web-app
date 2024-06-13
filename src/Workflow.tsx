@@ -8,7 +8,7 @@ import { CodeType } from './types';
 
 export const Workflow = () => {
   useEffect(() => {
-    document.title = 'Workflow Engine';
+    document.title = 'Workflows';
   });
   const [action, setAction] = useState<ActionType>(ActionType.None);
   const [codeName, setCodeName] = useState<string>('');

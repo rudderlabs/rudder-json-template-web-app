@@ -2,9 +2,10 @@
   "name": "rudder-json-template-engine-playground",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@monaco-editor/react": "^4.6.0",
-    "@rudderstack/json-template-engine": "^0.11.0",
+    "@rudderstack/json-template-engine": "^0.12.8",
     "@rudderstack/workflow-engine": "^0.8.0",
     "axios": "^1.7.2",
     "react": "^18.3.1",
@@ -13,7 +14,6 @@
     "split-pane-react": "^0.1.3"
   },
   "scripts": {
-    "dev": "vite",
     "build": "rm -rf dist && tsc && vite build",
     "preview": "vite preview",
     "format": "prettier --write '**/*.ts' '**/*.js' '**/*.tsx'  '**/*.css' '**/*.json'"
@@ -37,14 +37,14 @@
     ]
   },
   "devDependencies": {
-    "@types/node": "^20.8.2",
-    "@types/react": "^18.2.24",
-    "@types/react-dom": "^18.2.8",
-    "@vitejs/plugin-react": "^4.1.0",
-    "prettier": "^3.0.3",
-    "typescript": "^5.2.2",
-    "vite": "^4.5.0",
+    "@types/node": "^20.14.2",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "prettier": "^3.3.2",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.13",
     "vite-plugin-dynamic-import": "^1.5.0",
-    "vite-plugin-node-polyfills": "^0.15.0"
+    "vite-plugin-node-polyfills": "^0.22.0"
   }
 }

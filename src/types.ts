@@ -1,5 +1,6 @@
 export enum CodeType {
   JsonTemplate = 'JsonTemplate',
+  Mappings = 'Mappings',
   Workflow = 'Workflow',
 }
 

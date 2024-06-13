@@ -11,10 +11,20 @@ import SaveCode from './SaveCode';
 import { ActionType, ActionsContext } from './action';
 import { downloadCode, CodeType, DEFAULT_DATA, DEFAULT_BINDINGS, Code } from './types';
 import { useLocation } from 'react-router-dom';
-
+function getCodeLanguage(type: CodeType) {
+  switch (type) {
+    case CodeType.JsonTemplate:
+      return 'javascript';
+    case CodeType.Mappings:
+      return 'json';
+    default:
+      return 'yaml';
+  }
+}
 const PlayGround = (props: {
   execute: (code: string, data: any, bindings: Record<string, any>) => Promise<any>;
   parse?: (code: string) => any;
+  convert?: (code: string) => any;
   type: CodeType;
 }) => {
   const location = useLocation();
@@ -22,9 +32,14 @@ const PlayGround = (props: {
   const githubGistID = queryParams.get('gist');
   const codeObj = (location.state?.code || {}) as Code;
 
-  const codeLang = props.type === CodeType.JsonTemplate ? 'javascript' : 'yaml';
+  const codeLang = getCodeLanguage(props.type);
   const commentCode = props.type === CodeType.JsonTemplate ? '// ' : '# ';
-  const initialCode = `${commentCode} Enter your ${props.type} code here`;
+  const initialCode = props.type !== CodeType.Mappings ? `${commentCode} Enter your ${props.type} code here`: `[
+    {
+      "input": "$",
+      "output": "$"
+    }
+  ]`;
 
   const { action, setAction, codeName } = useContext(ActionsContext);
   const [data, setData] = useState<string | undefined>(DEFAULT_DATA);
@@ -107,11 +122,22 @@ const PlayGround = (props: {
   }
 
   async function parseCode() {
-    if (!code || props.type !== CodeType.JsonTemplate || !props.parse) {
+    if (!code || !props.parse) {
       return;
     }
     try {
       setResult({ output: props.parse(code) });
+    } catch (error: any) {
+      setResult({ error: error.message });
+    }
+  }
+
+  async function convertCode() {
+    if (!code || props.type !== CodeType.Mappings || !props.convert) {
+      return;
+    }
+    try {
+      setResult({ output: props.convert(code) });
     } catch (error: any) {
       setResult({ error: error.message });
     }
@@ -150,7 +176,12 @@ const PlayGround = (props: {
           <div style={layoutCSS} title={`Enter ${props.type} Code`}>
             <Editor defaultLanguage={codeLang} value={code} onChange={setCode} />
             <div className="playground-button">
-              {props.type === CodeType.JsonTemplate && (
+              {props.type === CodeType.Mappings && (
+                <button onClick={convertCode} title={`Convert ${props.type}`}>
+                  Convert
+                </button>
+              )}
+              {props.type !== CodeType.Workflow && (
                 <button onClick={parseCode} title={`Parse ${props.type}`}>
                   Parse
                 </button>

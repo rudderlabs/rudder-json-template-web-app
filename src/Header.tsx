@@ -33,6 +33,9 @@ const Header = () => {
             <NavLink to="/json-template">Json Templates</NavLink>
           </li>
           <li>
+            <NavLink to="/mappings">Mappings</NavLink>
+          </li>
+          <li>
             <NavLink to="/workflow-engine">Workflows</NavLink>
           </li>
         </ul>
