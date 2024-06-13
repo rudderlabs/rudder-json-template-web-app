@@ -11,6 +11,7 @@ import SaveCode from './SaveCode';
 import { ActionType, ActionsContext } from './action';
 import { downloadCode, CodeType, DEFAULT_DATA, DEFAULT_BINDINGS, Code } from './types';
 import { useLocation } from 'react-router-dom';
+
 function getCodeLanguage(type: CodeType) {
   switch (type) {
     case CodeType.JsonTemplate:

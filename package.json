@@ -14,8 +14,9 @@
     "split-pane-react": "^0.1.3"
   },
   "scripts": {
+    "dev": "vite",
     "build": "rm -rf dist && tsc && vite build",
-    "preview": "vite preview",
+    "preview": "npm run build && vite preview",
     "format": "prettier --write '**/*.ts' '**/*.js' '**/*.tsx'  '**/*.css' '**/*.json'"
   },
   "eslintConfig": {

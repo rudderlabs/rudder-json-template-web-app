@@ -6,8 +6,31 @@ import GithubLogo from './assets/images/github-mark.svg';
 import DocsIcon from './assets/images/docs.svg';
 import SaveIcon from './assets/images/save.svg';
 import LoadIcon from './assets/images/load.svg';
+import { useLocation } from 'react-router-dom';
 
 import './Header.css';
+
+function getReadmeLink() {
+  const location = useLocation();
+  switch (location.pathname) {
+    case '/json-template':
+      return 'https://github.com/rudderlabs/rudder-json-template-engine/blob/main/readme.md';
+    case '/mappings':
+      return 'https://github.com/rudderlabs/rudder-json-template-engine/blob/main/readme.md#mappings';
+    case '/workflow-engine':
+      return 'https://github.com/rudderlabs/rudder-workflow-engine/blob/main/README.md';
+    default:
+      return '';
+  }
+}
+
+function getGithubLink() {
+  const location = useLocation();
+  if(location.pathname === '/workflow-engine') {
+    return 'https://github.com/rudderlabs/rudder-workflow-engine';
+  }
+  return 'https://github.com/rudderlabs/rudder-json-template-engine'; 
+}
 
 const Header = () => {
   const { setAction } = useContext(ActionsContext);
@@ -50,14 +73,14 @@ const Header = () => {
         <a
           target="_blank"
           rel="noreferrer"
-          href="https://github.com/rudderlabs/rudder-json-template-engine"
+          href={getGithubLink()}
         >
           <img src={GithubLogo} className="logo" alt="RuddersSource codeack" />
         </a>
         <a
           target="_blank"
           rel="noreferrer"
-          href="https://github.com/rudderlabs/rudder-json-template-engine/blob/main/readme.md"
+          href={getReadmeLink()}
         >
           <img src={DocsIcon} alt="Docs" title="Docs" />
         </a>
