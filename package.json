@@ -17,6 +17,7 @@
     "dev": "vite",
     "build": "rm -rf dist && tsc && vite build",
     "preview": "npm run build && vite preview",
+    "test": "echo 'Add tests'",
     "prepare": "husky",
     "format": "prettier --write '**/*.ts' '**/*.js' '**/*.tsx'  '**/*.css' '**/*.json'"
   },
