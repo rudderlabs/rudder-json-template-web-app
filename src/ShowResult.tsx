@@ -3,7 +3,7 @@ import './ShowResult.css';
 import { Result } from './types';
 
 function getResultValue(result: Result) {
-  if(result.langugage === 'javascript') {
+  if (result.langugage === 'javascript') {
     return result.output;
   }
   return JSON.stringify(result.output, null, 2);
