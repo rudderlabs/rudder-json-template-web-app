@@ -17,6 +17,7 @@
     "dev": "vite",
     "build": "rm -rf dist && tsc && vite build",
     "preview": "npm run build && vite preview",
+    "prepare": "husky install",
     "format": "prettier --write '**/*.ts' '**/*.js' '**/*.tsx'  '**/*.css' '**/*.json'"
   },
   "eslintConfig": {
@@ -45,6 +46,7 @@
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
+    "husky": "^9.0.11",
     "lint-staged": "^15.2.7",
     "prettier": "^3.3.2",
     "typescript": "^5.4.5",
