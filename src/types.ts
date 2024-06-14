@@ -37,4 +37,5 @@ export const DEFAULT_BINDINGS = `const bindings = {
 export type Result = {
   output?: any;
   error?: string;
+  langugage?: string;
 };

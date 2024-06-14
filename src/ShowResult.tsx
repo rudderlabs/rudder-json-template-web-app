@@ -2,6 +2,17 @@ import Editor from '@monaco-editor/react';
 import './ShowResult.css';
 import { Result } from './types';
 
+function getResultValue(result: Result) {
+  if(result.langugage === 'javascript') {
+    return result.output;
+  }
+  return JSON.stringify(result.output, null, 2);
+}
+
+function getCodeLanguage(result: Result) {
+  return result.langugage || 'json';
+}
+
 const ShowResult = (props: { result?: Result }) => {
   const result = props.result;
   if (!result) {
@@ -15,8 +26,8 @@ const ShowResult = (props: { result?: Result }) => {
   }
   return (
     <Editor
-      defaultLanguage="json"
-      value={JSON.stringify(result.output, null, 2)}
+      defaultLanguage={getCodeLanguage(result)}
+      value={getResultValue(result)}
       options={{ readOnly: true }}
     />
   );

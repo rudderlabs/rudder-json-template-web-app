@@ -141,7 +141,7 @@ const PlayGround = (props: {
       return;
     }
     try {
-      setResult({ output: props.convert(code) });
+      setResult({ output: props.convert(code), langugage: 'javascript' });
     } catch (error: any) {
       setResult({ error: error.message });
     }
