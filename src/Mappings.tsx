@@ -15,7 +15,10 @@ export const Mappings = () => {
 
   async function executeMappings(code: string, data: any, bindings: any) {
     const mappings = JSON.parse(code) as FlatMappingPaths[];
-    return JsonTemplateEngine.create(mappings, {defaultPathType: PathType.JSON}).evaluate(data, bindings);
+    return JsonTemplateEngine.create(mappings, { defaultPathType: PathType.JSON }).evaluate(
+      data,
+      bindings,
+    );
   }
 
   function parseMappings(code: string) {
@@ -26,7 +29,9 @@ export const Mappings = () => {
   function convertMappings(code: string) {
     console.log(code);
     const mappings = JSON.parse(code) as FlatMappingPaths[];
-    return JsonTemplateEngine.convertMappingsToTemplate(mappings, {defaultPathType: PathType.JSON});
+    return JsonTemplateEngine.convertMappingsToTemplate(mappings, {
+      defaultPathType: PathType.JSON,
+    });
   }
 
   return (

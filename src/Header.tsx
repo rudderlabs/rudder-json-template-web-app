@@ -26,10 +26,10 @@ function getReadmeLink() {
 
 function getGithubLink() {
   const location = useLocation();
-  if(location.pathname === '/workflow-engine') {
+  if (location.pathname === '/workflow-engine') {
     return 'https://github.com/rudderlabs/rudder-workflow-engine';
   }
-  return 'https://github.com/rudderlabs/rudder-json-template-engine'; 
+  return 'https://github.com/rudderlabs/rudder-json-template-engine';
 }
 
 const Header = () => {
@@ -70,18 +70,10 @@ const Header = () => {
         <a title="Save code" onClick={() => triggerAction(ActionType.Saving)}>
           <img src={SaveIcon} className="logo" alt="Save" />
         </a>
-        <a
-          target="_blank"
-          rel="noreferrer"
-          href={getGithubLink()}
-        >
+        <a target="_blank" rel="noreferrer" href={getGithubLink()}>
           <img src={GithubLogo} className="logo" alt="RuddersSource codeack" />
         </a>
-        <a
-          target="_blank"
-          rel="noreferrer"
-          href={getReadmeLink()}
-        >
+        <a target="_blank" rel="noreferrer" href={getReadmeLink()}>
           <img src={DocsIcon} alt="Docs" title="Docs" />
         </a>
       </span>

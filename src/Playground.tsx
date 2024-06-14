@@ -35,7 +35,10 @@ const PlayGround = (props: {
 
   const codeLang = getCodeLanguage(props.type);
   const commentCode = props.type === CodeType.JsonTemplate ? '// ' : '# ';
-  const initialCode = props.type !== CodeType.Mappings ? `${commentCode} Enter your ${props.type} code here`: `[
+  const initialCode =
+    props.type !== CodeType.Mappings
+      ? `${commentCode} Enter your ${props.type} code here`
+      : `[
     {
       "input": "$",
       "output": "$"

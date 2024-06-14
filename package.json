@@ -5,8 +5,8 @@
   "type": "module",
   "dependencies": {
     "@monaco-editor/react": "^4.6.0",
-    "@rudderstack/json-template-engine": "^0.13.0",
-    "@rudderstack/workflow-engine": "^0.8.1",
+    "@rudderstack/json-template-engine": "^0.13.2",
+    "@rudderstack/workflow-engine": "^0.8.2",
     "axios": "^1.7.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -36,6 +36,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "lint-staged": {
+    "*.(tsx|ts|json|css|js)": "npm run format"
   },
   "devDependencies": {
     "@types/node": "^20.14.2",

@@ -24,9 +24,11 @@ export const JsonTemplate = () => {
   function convertMappings(code: string) {
     try {
       const mappings = JSON.parse(code) as FlatMappingPaths[];
-      return JsonTemplateEngine.convertMappingsToTemplate(mappings, {defaultPathType: PathType.JSON});
+      return JsonTemplateEngine.convertMappingsToTemplate(mappings, {
+        defaultPathType: PathType.JSON,
+      });
     } catch (error: any) {
-      throw new Error("Invalid mappings");
+      throw new Error('Invalid mappings');
     }
   }
 
