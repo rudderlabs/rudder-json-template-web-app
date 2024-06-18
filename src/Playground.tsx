@@ -31,7 +31,7 @@ const PlayGround = (props: {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const githubGistID = queryParams.get('gist');
-  const codeObj = (location.state?.code || {}) as Code;
+  let codeObj = (location.state?.code || {}) as Code;
 
   const codeLang = getCodeLanguage(props.type);
   const commentCode = props.type === CodeType.JsonTemplate ? '// ' : '# ';
@@ -52,6 +52,21 @@ const PlayGround = (props: {
   const [result, setResult] = useState<Result | undefined>();
   const [isExecuting, setExecuting] = useState<boolean>(false);
 
+  function loadCode(code: Code) {
+    if (codeObj.code) {
+      setCode(codeObj.code);
+    }
+    if (codeObj.data) {
+      setData(codeObj.data);
+    }
+    if (codeObj.bindings) {
+      setBindings(codeObj.bindings);
+    }
+    if (codeObj.result) {
+      setResult(codeObj.result);
+    }
+  }
+
   useEffect(() => {
     if (!githubGistID) return; // If gistId is not provided, return early
 
@@ -63,10 +78,8 @@ const PlayGround = (props: {
           // Extract raw content of the first file in the gist
           const files: any[] = Object.values(data.files);
           if (files.length > 0) {
-            const codeObj = JSON.parse(files[0].content) as Code;
-            setData(codeObj.data);
-            setBindings(codeObj.bindings);
-            setCode(codeObj.code);
+            codeObj = JSON.parse(files[0].content) as Code;
+            loadCode(codeObj);
           } else {
             throw new Error('No files found in the Gist');
           }
@@ -82,15 +95,7 @@ const PlayGround = (props: {
   }, [githubGistID]);
 
   useEffect(() => {
-    if (codeObj.code) {
-      setCode(codeObj.code);
-    }
-    if (codeObj.data) {
-      setData(codeObj.data);
-    }
-    if (codeObj.bindings) {
-      setBindings(codeObj.bindings);
-    }
+    loadCode(codeObj);
   }, [codeObj]);
 
   useEffect(() => {
@@ -104,7 +109,7 @@ const PlayGround = (props: {
   }, [action]);
 
   function saveCode() {
-    downloadCode({ code, name: codeName, type: props.type, data, bindings });
+    downloadCode({ code, name: codeName, type: props.type, data, bindings, result });
   }
 
   async function excuteCode() {

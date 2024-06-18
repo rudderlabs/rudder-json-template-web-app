@@ -27,6 +27,8 @@ const LoadCode = () => {
   function navigateWithCode(code: Code) {
     if (code.type === CodeType.JsonTemplate) {
       navigate('/json-template', { state: { code } });
+    } else if (code.type === CodeType.Mappings) {
+      navigate('/mappings', { state: { code } });
     } else {
       navigate('/workflow-engine', { state: { code } });
     }

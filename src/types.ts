@@ -9,6 +9,7 @@ export type Code = {
   data?: string;
   type: CodeType;
   bindings?: string;
+  result?: Result;
   code?: string;
 };
 
