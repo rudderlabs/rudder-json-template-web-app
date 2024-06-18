@@ -3,7 +3,12 @@ import Playground from './Playground';
 import Header from './Header';
 import { ActionType, ActionsContext } from './action';
 import { CodeType } from './types';
-import { FlatMappingPaths, JsonTemplateEngine, PathType } from '@rudderstack/json-template-engine';
+import {
+  Expression,
+  FlatMappingPaths,
+  JsonTemplateEngine,
+  PathType,
+} from '@rudderstack/json-template-engine';
 
 export const Mappings = () => {
   useEffect(() => {
@@ -13,23 +18,22 @@ export const Mappings = () => {
   const [action, setAction] = useState<ActionType>(ActionType.None);
   const [codeName, setCodeName] = useState<string>('');
 
-  async function executeMappings(code: string, data: any, bindings: any) {
+  function parseMappings(code: string): Expression {
     const mappings = JSON.parse(code) as FlatMappingPaths[];
-    return JsonTemplateEngine.create(mappings, { defaultPathType: PathType.JSON }).evaluate(
+    return JsonTemplateEngine.parse(mappings, { defaultPathType: PathType.JSON });
+  }
+
+  async function executeMappings(code: string, data: any, bindings: any) {
+    const expr = parseMappings(code);
+    return JsonTemplateEngine.create(expr, { defaultPathType: PathType.JSON }).evaluate(
       data,
       bindings,
     );
   }
 
-  function parseMappings(code: string) {
-    const mappings = JSON.parse(code) as FlatMappingPaths[];
-    return JsonTemplateEngine.parse(mappings);
-  }
-
   function convertMappings(code: string) {
-    console.log(code);
-    const mappings = JSON.parse(code) as FlatMappingPaths[];
-    return JsonTemplateEngine.convertMappingsToTemplate(mappings, {
+    const expr = parseMappings(code);
+    return JsonTemplateEngine.reverseTranslate(expr, {
       defaultPathType: PathType.JSON,
     });
   }
