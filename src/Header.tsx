@@ -1,12 +1,11 @@
 import React, { useContext } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { ActionType, ActionsContext } from './action';
 import RudderStackLogo from './assets/images/rudderstack-logo.svg';
 import GithubLogo from './assets/images/github-mark.svg';
 import DocsIcon from './assets/images/docs.svg';
 import SaveIcon from './assets/images/save.svg';
 import LoadIcon from './assets/images/load.svg';
-import { useLocation } from 'react-router-dom';
 
 import './Header.css';
 

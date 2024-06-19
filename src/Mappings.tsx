@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Playground from './Playground';
 import Header from './Header';
-import { ActionType, ActionsContext } from './action';
 import { CodeType } from './types';
 import {
   Expression,
@@ -14,9 +13,6 @@ export const Mappings = () => {
   useEffect(() => {
     document.title = 'Json Template Mappings';
   });
-
-  const [action, setAction] = useState<ActionType>(ActionType.None);
-  const [codeName, setCodeName] = useState<string>('');
 
   function parseMappings(code: string): Expression {
     const mappings = JSON.parse(code) as FlatMappingPaths[];
@@ -39,16 +35,14 @@ export const Mappings = () => {
   }
 
   return (
-    <ActionsContext.Provider value={{ action, setAction, codeName, setCodeName }}>
-      <div className="app">
-        <Header />
-        <Playground
-          execute={executeMappings}
-          parse={parseMappings}
-          convert={convertMappings}
-          type={CodeType.Mappings}
-        />
-      </div>
-    </ActionsContext.Provider>
+    <div className="app">
+      <Header />
+      <Playground
+        execute={executeMappings}
+        parse={parseMappings}
+        convert={convertMappings}
+        type={CodeType.Mappings}
+      />
+    </div>
   );
 };

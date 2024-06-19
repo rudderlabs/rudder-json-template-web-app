@@ -10,9 +10,6 @@ export const JsonTemplate = () => {
     document.title = 'Json Templates';
   });
 
-  const [action, setAction] = useState<ActionType>(ActionType.None);
-  const [codeName, setCodeName] = useState<string>('');
-
   async function executeJsonTemplate(code: string, data: any, bindings: any) {
     return JsonTemplateEngine.create(code).evaluate(data, bindings);
   }
@@ -33,16 +30,14 @@ export const JsonTemplate = () => {
   }
 
   return (
-    <ActionsContext.Provider value={{ action, setAction, codeName, setCodeName }}>
-      <div className="app">
-        <Header />
-        <Playground
-          execute={executeJsonTemplate}
-          parse={parseJsonTemplate}
-          convert={convertMappings}
-          type={CodeType.JsonTemplate}
-        />
-      </div>
-    </ActionsContext.Provider>
+    <div className="app">
+      <Header />
+      <Playground
+        execute={executeJsonTemplate}
+        parse={parseJsonTemplate}
+        convert={convertMappings}
+        type={CodeType.JsonTemplate}
+      />
+    </div>
   );
 };

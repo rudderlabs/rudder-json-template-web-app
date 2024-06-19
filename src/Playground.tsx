@@ -8,7 +8,7 @@ import { Result } from './types';
 import Loader from './Loader';
 import LoadCode from './LoadCode';
 import SaveCode from './SaveCode';
-import { ActionType, ActionsContext } from './action';
+import { ActionType, ActionsContext, getPlayground, savePlayground } from './action';
 import { downloadCode, CodeType, DEFAULT_DATA, DEFAULT_BINDINGS, Code } from './types';
 import { useLocation } from 'react-router-dom';
 
@@ -22,6 +22,19 @@ function getCodeLanguage(type: CodeType) {
       return 'yaml';
   }
 }
+
+function getInitailCode(type: CodeType) {
+  const commentCode = type === CodeType.JsonTemplate ? '// ' : '# ';
+  return type !== CodeType.Mappings
+    ? `${commentCode} Enter your ${type} code here`
+    : `[
+    {
+      "input": "$",
+      "output": "$"
+    }
+  ]`;
+}
+
 const PlayGround = (props: {
   execute: (code: string, data: any, bindings: Record<string, any>) => Promise<any>;
   parse?: (code: string) => any;
@@ -31,45 +44,61 @@ const PlayGround = (props: {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const githubGistID = queryParams.get('gist');
-  let codeObj = (location.state?.code || {}) as Code;
+  const { action, setAction, codeName } = useContext(ActionsContext);
+  const codeObj = getPlayground(props.type);
 
   const codeLang = getCodeLanguage(props.type);
-  const commentCode = props.type === CodeType.JsonTemplate ? '// ' : '# ';
-  const initialCode =
-    props.type !== CodeType.Mappings
-      ? `${commentCode} Enter your ${props.type} code here`
-      : `[
-    {
-      "input": "$",
-      "output": "$"
-    }
-  ]`;
 
-  const { action, setAction, codeName } = useContext(ActionsContext);
-  const [data, setData] = useState<string | undefined>(DEFAULT_DATA);
-  const [bindings, setBindings] = useState<string | undefined>(DEFAULT_BINDINGS);
-  const [code, setCode] = useState<string | undefined>(initialCode);
-  const [result, setResult] = useState<Result | undefined>();
+  const [data, setData] = useState<string | undefined>(codeObj.data ?? DEFAULT_DATA);
+  const [bindings, setBindings] = useState<string | undefined>(
+    codeObj.bindings ?? DEFAULT_BINDINGS,
+  );
+  const [code, setCode] = useState<string | undefined>(codeObj.code ?? getInitailCode(props.type));
+  const [result, setResult] = useState<Result | undefined>(codeObj.result);
   const [isExecuting, setExecuting] = useState<boolean>(false);
 
-  function loadCode(code: Code) {
-    if (codeObj.code) {
-      setCode(codeObj.code);
+  function loadCode(codeObj: Code) {
+    setData(codeObj.data ?? DEFAULT_DATA);
+    setBindings(codeObj.bindings ?? DEFAULT_BINDINGS);
+    setCode(codeObj.code ?? getInitailCode(props.type));
+    setResult(codeObj.result);
+    savePlayground(codeObj);
+  }
+
+  function handleCodeChange(code?: string) {
+    if (!code) {
+      return;
     }
-    if (codeObj.data) {
-      setData(codeObj.data);
+    setCode(code);
+    savePlayground({ code, data, bindings, result, type: props.type, name: codeName });
+  }
+
+  function handleBindingsChange(bindings?: string) {
+    if (!bindings) {
+      return;
     }
-    if (codeObj.bindings) {
-      setBindings(codeObj.bindings);
+    setBindings(bindings);
+    savePlayground({ code, data, bindings, result, type: props.type, name: codeName });
+  }
+
+  function handleDataChange(data?: string) {
+    if (!data) {
+      return;
     }
-    if (codeObj.result) {
-      setResult(codeObj.result);
+    setData(data);
+    savePlayground({ code, data, bindings, result, type: props.type, name: codeName });
+  }
+
+  function handleResultChange(result?: Result) {
+    if (!result) {
+      return;
     }
+    setResult(result);
+    savePlayground({ code, data, bindings, result, type: props.type, name: codeName });
   }
 
   useEffect(() => {
     if (!githubGistID) return; // If gistId is not provided, return early
-
     const fetchGist = async () => {
       try {
         const response = await fetch(`https://api.github.com/gists/${githubGistID}`);
@@ -78,8 +107,7 @@ const PlayGround = (props: {
           // Extract raw content of the first file in the gist
           const files: any[] = Object.values(data.files);
           if (files.length > 0) {
-            codeObj = JSON.parse(files[0].content) as Code;
-            loadCode(codeObj);
+            loadCode(JSON.parse(files[0].content) as Code);
           } else {
             throw new Error('No files found in the Gist');
           }
@@ -88,15 +116,13 @@ const PlayGround = (props: {
         }
       } catch (error) {
         console.error('Error fetching Gist:', error);
+      } finally {
+        setExecuting(false);
       }
     };
-
+    setExecuting(true);
     fetchGist();
   }, [githubGistID]);
-
-  useEffect(() => {
-    loadCode(codeObj);
-  }, [codeObj]);
 
   useEffect(() => {
     if (action === ActionType.None) {
@@ -123,9 +149,9 @@ const PlayGround = (props: {
 
     try {
       const output = await props.execute(code, dataObj, bindingsObj);
-      setResult({ output });
+      handleResultChange({ output });
     } catch (error: any) {
-      setResult({ error: error.message });
+      handleResultChange({ error: error.message });
     }
     setExecuting(false);
   }
@@ -135,9 +161,9 @@ const PlayGround = (props: {
       return;
     }
     try {
-      setResult({ output: props.parse(code) });
+      handleResultChange({ output: props.parse(code) });
     } catch (error: any) {
-      setResult({ error: error.message });
+      handleResultChange({ error: error.message });
     }
   }
 
@@ -146,9 +172,9 @@ const PlayGround = (props: {
       return;
     }
     try {
-      setResult({ output: props.convert(code), langugage: 'javascript' });
+      handleResultChange({ output: props.convert(code), langugage: 'javascript' });
     } catch (error: any) {
-      setResult({ error: error.message });
+      handleResultChange({ error: error.message });
     }
   }
 
@@ -175,15 +201,15 @@ const PlayGround = (props: {
       <SplitPane split="vertical" sizes={sizes} onChange={setSizes} sashRender={sashRender}>
         <SplitPane split="horizontal" sizes={sizes1} onChange={setSizes1} sashRender={sashRender}>
           <div style={layoutCSS} title="Enter Data">
-            <Editor defaultLanguage="json" value={data} onChange={setData} />
+            <Editor defaultLanguage="json" value={data} onChange={handleDataChange} />
           </div>
           <div style={layoutCSS} title="Enter Bindings">
-            <Editor defaultLanguage="javascript" value={bindings} onChange={setBindings} />
+            <Editor defaultLanguage="javascript" value={bindings} onChange={handleBindingsChange} />
           </div>
         </SplitPane>
         <SplitPane split="horizontal" sizes={sizes2} onChange={setSizes2} sashRender={sashRender}>
           <div style={layoutCSS} title={`Enter ${props.type} Code`}>
-            <Editor defaultLanguage={codeLang} value={code} onChange={setCode} />
+            <Editor defaultLanguage={codeLang} value={code} onChange={handleCodeChange} />
             <div className="playground-button">
               {props.type === CodeType.Mappings && (
                 <button onClick={convertCode} title={`Convert ${props.type}`}>
