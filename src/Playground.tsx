@@ -46,7 +46,6 @@ const PlayGround = (props: {
   const githubGistID = queryParams.get('gist');
   const { action, setAction, codeName } = useContext(ActionsContext);
   const codeObj = getPlayground(props.type);
-
   const codeLang = getCodeLanguage(props.type);
 
   const [data, setData] = useState<string | undefined>(codeObj.data ?? DEFAULT_DATA);
@@ -64,6 +63,13 @@ const PlayGround = (props: {
     setResult(codeObj.result);
     savePlayground(codeObj);
   }
+
+  useEffect(() => {
+    if (!location.state?.code) {
+      return;
+    }
+    loadCode(location.state.code);
+  }, [location.state?.code]);
 
   function handleCodeChange(code?: string) {
     if (!code) {

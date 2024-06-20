@@ -24,7 +24,7 @@ export const ActionsContext = createContext<Action>({
 
 let timeout: NodeJS.Timeout;
 
-export function savePlaygroundSimple(code: Code) {
+function savePlaygroundSimple(code: Code) {
   localStorage.setItem(`playgrounds-${code.type}`, JSON.stringify(code));
 }
 

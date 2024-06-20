@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { Code, CodeType } from './types';
-import { ActionType, ActionsContext, savePlaygroundSimple } from './action';
+import { useNavigate } from 'react-router-dom';
+import { Code } from './types';
+import { ActionType, ActionsContext, savePlayground } from './action';
 import CloseIcon from './assets/images/close.svg';
 import './LoadCode.css';
 import { CommonUtils } from './utils';
@@ -9,16 +9,10 @@ import { CommonUtils } from './utils';
 const LoadCode = () => {
   const { setAction } = useContext(ActionsContext);
   const navigate = useNavigate();
-  const location = useLocation();
 
-  function navigateToPage(type: CodeType) {
+  function navigateToPage(code: Code) {
     closeModel();
-    const navPath = CommonUtils.getNavigationPath(type);
-    if (navPath === location.pathname) {
-      navigate(0);
-    } else {
-      navigate(navPath);
-    }
+    navigate(CommonUtils.getNavigationPath(code.type), { state: { code } });
   }
 
   function closeModel() {
@@ -47,8 +41,8 @@ const LoadCode = () => {
     const reader = new FileReader();
     reader.onload = (e) => {
       const code = JSON.parse(e.target?.result as string) as Code;
-      savePlaygroundSimple(code);
-      navigateToPage(code.type);
+      savePlayground(code);
+      navigateToPage(code);
     };
     reader.readAsText(file);
   }
