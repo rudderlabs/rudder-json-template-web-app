@@ -2,6 +2,7 @@ import { createContext } from 'react';
 import { Code, CodeType } from './types';
 
 export enum ActionType {
+  Copy,
   Saving,
   Save,
   Load,
@@ -11,13 +12,21 @@ export enum ActionType {
 export type Action = {
   action: ActionType;
   codeName: string;
+  notification: string;
+  codePasted?: Code;
+  setCodePasted: (code: Code) => void;
+  setNotification: (notification: string) => void;
   setAction: (action: ActionType) => void;
   setCodeName: (codeName: string) => void;
 };
 
 export const ActionsContext = createContext<Action>({
+  codePasted: undefined,
+  setCodePasted: () => {},
   action: ActionType.None,
   setAction: () => {},
+  notification: '',
+  setNotification: () => {},
   setCodeName: () => {},
   codeName: '',
 });

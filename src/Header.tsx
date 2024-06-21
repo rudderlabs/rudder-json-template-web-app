@@ -3,11 +3,13 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { ActionType, ActionsContext } from './action';
 import RudderStackLogo from './assets/images/rudderstack-logo.svg';
 import GithubLogo from './assets/images/github-mark.svg';
+import CopyIcon from './assets/images/copy.svg';
 import DocsIcon from './assets/images/docs.svg';
 import SaveIcon from './assets/images/save.svg';
 import LoadIcon from './assets/images/load.svg';
 
 import './Header.css';
+import { Code } from './types';
 
 function getReadmeLink() {
   const location = useLocation();
@@ -32,14 +34,23 @@ function getGithubLink() {
 }
 
 const Header = () => {
-  const { setAction } = useContext(ActionsContext);
+  const { setAction, setCodePasted } = useContext(ActionsContext);
 
-  const triggerAction = (action: ActionType) => {
-    setAction(action);
-  };
+  function handleCodePaste(event: React.ClipboardEvent<HTMLDivElement>) {
+    if (!event.clipboardData) {
+      return;
+    }
+    const pastedText = event.clipboardData.getData('text');
+    if (!pastedText) {
+      return;
+    }
+    if (pastedText) {
+      setCodePasted(JSON.parse(pastedText) as Code);
+    }
+  }
 
   return (
-    <div className="header">
+    <div className="header" onPaste={handleCodePaste}>
       <a target="_blank" rel="noreferrer" href="https://www.rudderstack.com/">
         <span className="main-logo">
           <img src={RudderStackLogo} className="logo" alt="Rudderstack" />
@@ -63,10 +74,13 @@ const Header = () => {
         </ul>
       </nav>
       <span className="icons">
-        <a title="Load code" onClick={() => triggerAction(ActionType.Load)}>
+        <a title="Copy code" onClick={() => setAction(ActionType.Copy)}>
+          <img src={CopyIcon} className="logo" alt="Copy" />
+        </a>
+        <a title="Load code" onClick={() => setAction(ActionType.Load)}>
           <img src={LoadIcon} className="logo" alt="Load" />
         </a>
-        <a title="Save code" onClick={() => triggerAction(ActionType.Saving)}>
+        <a title="Save code" onClick={() => setAction(ActionType.Saving)}>
           <img src={SaveIcon} className="logo" alt="Save" />
         </a>
         <a target="_blank" rel="noreferrer" href={getGithubLink()}>

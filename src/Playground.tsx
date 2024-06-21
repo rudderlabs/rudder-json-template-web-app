@@ -8,6 +8,7 @@ import { Result } from './types';
 import Loader from './Loader';
 import LoadCode from './LoadCode';
 import SaveCode from './SaveCode';
+import Snackbar from './Snackbar';
 import { ActionType, ActionsContext, getPlayground, savePlayground } from './action';
 import { downloadCode, CodeType, DEFAULT_DATA, DEFAULT_BINDINGS, Code } from './types';
 import { useLocation } from 'react-router-dom';
@@ -44,7 +45,8 @@ const PlayGround = (props: {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const githubGistID = queryParams.get('gist');
-  const { action, setAction, codeName } = useContext(ActionsContext);
+  const { action, setAction, codeName, codePasted, setCodePasted, setNotification } =
+    useContext(ActionsContext);
   const codeObj = getPlayground(props.type);
   const codeLang = getCodeLanguage(props.type);
 
@@ -54,14 +56,29 @@ const PlayGround = (props: {
   );
   const [code, setCode] = useState<string | undefined>(codeObj.code ?? getInitailCode(props.type));
   const [result, setResult] = useState<Result | undefined>(codeObj.result);
-  const [isExecuting, setExecuting] = useState<boolean>(false);
+  const [isLoading, setLoading] = useState<boolean>(false);
+
+  function getCode() {
+    return {
+      code,
+      data,
+      bindings,
+      result,
+      type: props.type,
+      name: codeName,
+    };
+  }
+
+  useEffect(() => {
+    savePlayground(getCode());
+  }, [code, data, bindings, result]);
 
   function loadCode(codeObj: Code) {
+    if (!codeObj || typeof codeObj !== 'object') return;
     setData(codeObj.data ?? DEFAULT_DATA);
     setBindings(codeObj.bindings ?? DEFAULT_BINDINGS);
     setCode(codeObj.code ?? getInitailCode(props.type));
     setResult(codeObj.result);
-    savePlayground(codeObj);
   }
 
   useEffect(() => {
@@ -70,38 +87,6 @@ const PlayGround = (props: {
     }
     loadCode(location.state.code);
   }, [location.state?.code]);
-
-  function handleCodeChange(code?: string) {
-    if (!code) {
-      return;
-    }
-    setCode(code);
-    savePlayground({ code, data, bindings, result, type: props.type, name: codeName });
-  }
-
-  function handleBindingsChange(bindings?: string) {
-    if (!bindings) {
-      return;
-    }
-    setBindings(bindings);
-    savePlayground({ code, data, bindings, result, type: props.type, name: codeName });
-  }
-
-  function handleDataChange(data?: string) {
-    if (!data) {
-      return;
-    }
-    setData(data);
-    savePlayground({ code, data, bindings, result, type: props.type, name: codeName });
-  }
-
-  function handleResultChange(result?: Result) {
-    if (!result) {
-      return;
-    }
-    setResult(result);
-    savePlayground({ code, data, bindings, result, type: props.type, name: codeName });
-  }
 
   useEffect(() => {
     if (!githubGistID) return; // If gistId is not provided, return early
@@ -113,7 +98,7 @@ const PlayGround = (props: {
           // Extract raw content of the first file in the gist
           const files: any[] = Object.values(data.files);
           if (files.length > 0) {
-            loadCode(JSON.parse(files[0].content) as Code);
+            loadCode(JSON.parse(files[0].content ?? '{}') as Code);
           } else {
             throw new Error('No files found in the Gist');
           }
@@ -123,10 +108,10 @@ const PlayGround = (props: {
       } catch (error) {
         console.error('Error fetching Gist:', error);
       } finally {
-        setExecuting(false);
+        setLoading(false);
       }
     };
-    setExecuting(true);
+    setLoading(true);
     fetchGist();
   }, [githubGistID]);
 
@@ -138,28 +123,59 @@ const PlayGround = (props: {
       saveCode();
       setAction(ActionType.None);
     }
+
+    if (action === ActionType.Copy) {
+      copyCode();
+    }
   }, [action]);
+
+  useEffect(() => {
+    if (!codePasted) {
+      return;
+    }
+    loadCode(codePasted);
+    setNotification('Code pasted');
+  }, [codePasted]);
+
+  function handleCodePaste(event: React.ClipboardEvent<HTMLDivElement>) {
+    if (!event.clipboardData) {
+      return;
+    }
+    const pastedText = event.clipboardData.getData('text');
+    if (!pastedText) {
+      return;
+    }
+    if (pastedText) {
+      setCodePasted(JSON.parse(pastedText) as Code);
+    }
+  }
 
   function saveCode() {
     downloadCode({ code, name: codeName, type: props.type, data, bindings, result });
+  }
+
+  async function copyCode() {
+    await navigator.clipboard.writeText(JSON.stringify(getCode()));
+    setNotification('Code copied');
+    setAction(ActionType.None);
   }
 
   async function excuteCode() {
     if (!code) {
       return;
     }
-    setExecuting(true);
+    setLoading(true);
     const dataObj = JSON.parse(data ?? '{}');
     // eslint-disable-next-line no-new-func
     const bindingsObj = new Function(`${bindings ?? DEFAULT_BINDINGS};return bindings;`)();
 
     try {
       const output = await props.execute(code, dataObj, bindingsObj);
-      handleResultChange({ output });
+      setResult({ output });
     } catch (error: any) {
-      handleResultChange({ error: error.message });
+      setResult({ error: error.message });
     }
-    setExecuting(false);
+    setLoading(false);
   }
 
   async function parseCode() {
@@ -167,9 +183,9 @@ const PlayGround = (props: {
       return;
     }
     try {
-      handleResultChange({ output: props.parse(code) });
+      setResult({ output: props.parse(code) });
     } catch (error: any) {
-      handleResultChange({ error: error.message });
+      setResult({ error: error.message });
     }
   }
 
@@ -178,9 +194,9 @@ const PlayGround = (props: {
       return;
     }
     try {
-      handleResultChange({ output: props.convert(code), langugage: 'javascript' });
+      setResult({ output: props.convert(code), langugage: 'javascript' });
     } catch (error: any) {
-      handleResultChange({ error: error.message });
+      setResult({ error: error.message });
     }
   }
 
@@ -199,23 +215,23 @@ const PlayGround = (props: {
   const sashRender = () => <div></div>;
 
   return (
-    <div style={{ ...layoutCSS, height: '85vh' }}>
-      {isExecuting && <Loader />}
+    <div style={{ ...layoutCSS, height: '85vh' }} id="playground" onPaste={handleCodePaste}>
+      {isLoading && <Loader />}
       {action === ActionType.Load && <LoadCode />}
       {action === ActionType.Saving && <SaveCode />}
-
+      <Snackbar duration={2000} />
       <SplitPane split="vertical" sizes={sizes} onChange={setSizes} sashRender={sashRender}>
         <SplitPane split="horizontal" sizes={sizes1} onChange={setSizes1} sashRender={sashRender}>
           <div style={layoutCSS} title="Enter Data">
-            <Editor defaultLanguage="json" value={data} onChange={handleDataChange} />
+            <Editor defaultLanguage="json" value={data} onChange={setData} />
           </div>
           <div style={layoutCSS} title="Enter Bindings">
-            <Editor defaultLanguage="javascript" value={bindings} onChange={handleBindingsChange} />
+            <Editor defaultLanguage="javascript" value={bindings} onChange={setBindings} />
           </div>
         </SplitPane>
         <SplitPane split="horizontal" sizes={sizes2} onChange={setSizes2} sashRender={sashRender}>
           <div style={layoutCSS} title={`Enter ${props.type} Code`}>
-            <Editor defaultLanguage={codeLang} value={code} onChange={handleCodeChange} />
+            <Editor defaultLanguage={codeLang} value={code} onChange={setCode} />
             <div className="playground-button">
               {props.type === CodeType.Mappings && (
                 <button onClick={convertCode} title={`Convert ${props.type}`}>

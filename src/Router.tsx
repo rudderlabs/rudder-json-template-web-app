@@ -4,6 +4,7 @@ import { JsonTemplate } from './JsonTemplate';
 import { Mappings } from './Mappings';
 import { Workflow } from './Workflow';
 import { ActionType, ActionsContext } from './action';
+import { Code } from './types';
 
 export const Router = () => {
   const router = createHashRouter([
@@ -24,10 +25,24 @@ export const Router = () => {
       element: <Workflow />,
     },
   ]);
+  const [notification, setNotification] = useState<string>('');
+  const [codePasted, setCodePasted] = useState<Code | undefined>();
+
   const [action, setAction] = useState<ActionType>(ActionType.None);
   const [codeName, setCodeName] = useState<string>('');
   return (
-    <ActionsContext.Provider value={{ action, setAction, codeName, setCodeName }}>
+    <ActionsContext.Provider
+      value={{
+        action,
+        setAction,
+        codePasted,
+        setCodePasted,
+        notification,
+        setNotification,
+        codeName,
+        setCodeName,
+      }}
+    >
       <RouterProvider router={router} />
     </ActionsContext.Provider>
   );
