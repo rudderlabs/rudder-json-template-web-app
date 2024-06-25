@@ -14,7 +14,7 @@ export type Action = {
   codeName: string;
   notification: string;
   codePasted?: Code;
-  setCodePasted: (code: Code) => void;
+  setCodePasted: (code?: Code) => void;
   setNotification: (notification: string) => void;
   setAction: (action: ActionType) => void;
   setCodeName: (codeName: string) => void;

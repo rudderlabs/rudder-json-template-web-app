@@ -135,6 +135,7 @@ const PlayGround = (props: {
     }
     loadCode(codePasted);
     setNotification('Code pasted');
+    setCodePasted(undefined);
   }, [codePasted]);
 
   function handleCodePaste(event: React.ClipboardEvent<HTMLDivElement>) {
