@@ -11,7 +11,8 @@ import SaveCode from './SaveCode';
 import Snackbar from './Snackbar';
 import { ActionType, ActionsContext, getPlayground, savePlayground } from './action';
 import { downloadCode, CodeType, DEFAULT_DATA, DEFAULT_BINDINGS, Code } from './types';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { CommonUtils } from './utils';
 
 function getCodeLanguage(type: CodeType) {
   switch (type) {
@@ -43,6 +44,7 @@ const PlayGround = (props: {
   type: CodeType;
 }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
   const githubGistID = queryParams.get('gist');
   const { action, setAction, codeName, codePasted, setCodePasted, setNotification } =
@@ -133,7 +135,7 @@ const PlayGround = (props: {
     if (!codePasted) {
       return;
     }
-    loadCode(codePasted);
+    navigate(CommonUtils.getNavigationPath(codePasted.type), { state: { code: codePasted } });
     setNotification('Code pasted');
     setCodePasted(undefined);
   }, [codePasted]);
