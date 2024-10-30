@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
-import SplitPane from 'split-pane-react';
+import { Allotment } from 'allotment';
 import Editor from '@monaco-editor/react';
-import 'split-pane-react/esm/themes/default.css';
+import 'allotment/dist/style.css';
 import ShowResult from './ShowResult';
 import './Playground.css';
 import { Result } from './types';
@@ -91,13 +91,12 @@ const PlayGround = (props: {
   }, [location.state?.code]);
 
   useEffect(() => {
-    if (!githubGistID) return; // If gistId is not provided, return early
+    if (!githubGistID) return;
     const fetchGist = async () => {
       try {
         const response = await fetch(`https://api.github.com/gists/${githubGistID}`);
         if (response.ok) {
           const data = await response.json();
-          // Extract raw content of the first file in the gist
           const files: any[] = Object.values(data.files);
           if (files.length > 0) {
             loadCode(JSON.parse(files[0].content ?? '{}') as Code);
@@ -169,7 +168,6 @@ const PlayGround = (props: {
     }
     setLoading(true);
     const dataObj = JSON.parse(data ?? '{}');
-    // eslint-disable-next-line no-new-func
     const bindingsObj = new Function(`${bindings ?? DEFAULT_BINDINGS};return bindings;`)();
 
     try {
@@ -203,61 +201,59 @@ const PlayGround = (props: {
     }
   }
 
-  const [sizes, setSizes] = useState<(number | string)[]>(['100vh', 'auto']);
-  const [sizes1, setSizes1] = useState<(number | string)[]>(['100vh', 'auto']);
-  const [sizes2, setSizes2] = useState<(number | string)[]>(['100vh', 'auto']);
-
-  const layoutCSS = {
-    height: '100%',
-    display: 'flex',
-    flexFlow: 'column',
-    justifyContent: 'center',
-    border: '1px solid #ddd',
-    background: '#fff',
-  };
-  const sashRender = () => <div></div>;
-
   return (
-    <div style={{ ...layoutCSS, height: '85vh' }} id="playground" onPaste={handleCodePaste}>
+    <div style={{ height: '85vh' }} id="playground" onPaste={handleCodePaste}>
       {isLoading && <Loader />}
       {action === ActionType.Load && <LoadCode />}
       {action === ActionType.Saving && <SaveCode />}
       <Snackbar duration={2000} />
-      <SplitPane split="vertical" sizes={sizes} onChange={setSizes} sashRender={sashRender}>
-        <SplitPane split="horizontal" sizes={sizes1} onChange={setSizes1} sashRender={sashRender}>
-          <div style={layoutCSS} title="Enter Data">
-            <Editor defaultLanguage="json" value={data} onChange={setData} />
-          </div>
-          <div style={layoutCSS} title="Enter Bindings">
-            <Editor defaultLanguage="javascript" value={bindings} onChange={setBindings} />
-          </div>
-        </SplitPane>
-        <SplitPane split="horizontal" sizes={sizes2} onChange={setSizes2} sashRender={sashRender}>
-          <div style={layoutCSS} title={`Enter ${props.type} Code`}>
-            <Editor defaultLanguage={codeLang} value={code} onChange={setCode} />
-            <div className="playground-button">
-              {props.type === CodeType.Mappings && (
-                <button onClick={convertCode} title={`Convert ${props.type}`}>
-                  Convert
-                </button>
-              )}
-              {props.type !== CodeType.Workflow && (
-                <button onClick={parseCode} title={`Parse ${props.type}`}>
-                  Parse
-                </button>
-              )}
-              <button onClick={excuteCode} title={`Execute ${props.type}`}>
-                Execute
-              </button>
-            </div>
-          </div>
-
-          <div className="result" title="Result">
-            <ShowResult result={result} />
-          </div>
-        </SplitPane>
-      </SplitPane>
+      <Allotment>
+        <Allotment.Pane preferredSize="50%">
+          <Allotment vertical>
+            <Allotment.Pane>
+              <div className="pane-container" title="Enter Data">
+                <Editor defaultLanguage="json" value={data} onChange={setData} />
+              </div>
+            </Allotment.Pane>
+            <Allotment.Pane>
+              <div className="pane-container" title="Enter Bindings">
+                <Editor defaultLanguage="javascript" value={bindings} onChange={setBindings} />
+              </div>
+            </Allotment.Pane>
+          </Allotment>
+        </Allotment.Pane>
+        <Allotment.Pane preferredSize="50%">
+          <Allotment vertical>
+            <Allotment.Pane>
+              <div className="pane-container" title={`Enter ${props.type} Code`}>
+                <Editor defaultLanguage={codeLang} value={code} onChange={setCode} />
+                <div className="playground-button-container">
+                  {props.type === CodeType.Mappings && (
+                    <button onClick={convertCode} title={`Convert ${props.type}`}>
+                      Convert
+                    </button>
+                  )}
+                  {props.type !== CodeType.Workflow && (
+                    <button onClick={parseCode} title={`Parse ${props.type}`}>
+                      Parse
+                    </button>
+                  )}
+                  <button onClick={excuteCode} title={`Execute ${props.type}`}>
+                    Execute
+                  </button>
+                </div>
+              </div>
+            </Allotment.Pane>
+            <Allotment.Pane>
+              <div className="pane-container" title="Result">
+                <ShowResult result={result} />
+              </div>
+            </Allotment.Pane>
+          </Allotment>
+        </Allotment.Pane>
+      </Allotment>
     </div>
   );
 };
+
 export default PlayGround;

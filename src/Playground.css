@@ -1,17 +1,38 @@
-.playground-button {
-  text-align: center;
-  margin: 10px;
+.pane-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
 }
 
-.playground-button button {
+.pane-container .monaco-editor {
+  flex: 1;
+}
+
+.playground-button-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 5px;
+  padding: 6px;
+  border-top: 1px solid #ccc;
+  /* Optional: a border to separate buttons from editor */
+  background-color: #f9f9f9;
+  /* Optional: button background for visibility */
+  text-align: center;
+}
+
+.playground-button-container button {
+  padding: 5px;
+  font-size: 14px;
+  cursor: pointer;
   color: #105ed5;
   font-size: 16px;
   font-weight: bold;
-  padding: 5px;
   margin-right: 10px;
 }
 
-.playground-button button:hover {
+.playground-button-container button:hover {
   background-color: #105ed5;
   color: #fff;
 }
