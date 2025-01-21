@@ -5,7 +5,7 @@
   "type": "module",
   "dependencies": {
     "@monaco-editor/react": "^4.6.0",
-    "@rudderstack/json-template-engine": "^0.19.1",
+    "@rudderstack/json-template-engine": "^0.19.3",
     "@rudderstack/workflow-engine": "^0.8.18",
     "allotment": "^1.20.2",
     "axios": "^1.7.7",
